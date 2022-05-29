@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pemesanan</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+
+</head>
+
+<body>
+    <div class="container">
+        <div class="content">
+
+        <body class="bg-grey">
+            <nav class="p-2 bg-danger text-black text-center">
+                <h3 class="">Pemesanan Produk</h3>
+            </nav>
+            <div class="row column"> -->
+                <div class="col-3" id="hasil">
+                </div>
+                <div class="col-6 card">
+                    <div class="card-header">Data</div>
+                    <div class="card-body">
+                        <label>Nama</label>
+                        <br>
+                        <div class="d-grid gap-2">
+                        <input class="form-control-sm" id="nama_pemesan" type="text" placeholder="Nama">
+                        </div>
+                        <br>
+                        <table id="data_produk">
+                            <label>Pilih Produk</label>
+                            <br>
+                            <label>Produk <span class="ms-5 ps-5"><span class="ms-4">Jumlah</span></span></label>
+                            <br>
+                            <tr id="row">
+                                <select class="form-control-sm" id="produk" onchange="tampil()">
+                                    <option disabled selected>Pilih produk</option>
+                                    <option value="Jet Tempur">Jet Tempur</option>
+                                    <option value="Nuklir Hiroshima">Nuklir Hiroshima</option>
+                                    <option value="Infinity Stone">Infinity Stone</option>
+                                    <option value="Burj Khalifa">Burj Khalifa</option>
+                                    <option value="Rudal Hipersonik">Rudal Hipersonik</option>
+                                </select>
+                                &emsp;
+                                <input class="form-control-sm" id="banyak" type="number" placeholder="Jumlah">
+                                &emsp13;                                    
+                                <button class="tambah btn-secondary btn">Tambah</button>
+
+                            </tr>
+
+                        </table>
+                        <div class="text-white bg-danger circle" id="warning">
+                        </div>
+                        <div class="text-white bg-danger circle" id="warning2">
+                        </div>
+                        <br>
+                        <div class="d-grid gap-2">
+                            <button class=" btn btn-primary" id="pesan">Pesan</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-3">
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        var produk = [
+{ "stok": 10, "nama": "Jet Tempur" },
+{ "stok": 1, "nama": "Nuklir Hiroshima" },
+{ "stok": 6, "nama": "Infinity Stone" },
+{ "stok": 5, "nama": "Burj Khalifa" },
+{ "stok": 3, "nama": "Rudal Hipersonik" },
+];
+
+$(".tambah").hide();
+var data = ''
+
+$rownomor = $("#data_produk tr").length;
+$maks = 1
+function delete_row(rownomor) {
+    $('#' + rownomor).remove();
+    $maks--
+}
+
+function tampil() {
+    if ($maks < 5) {
+        $(".tambah").show();
+    }
+}
+
+
+function add_row() {
+    if ($maks < 5) {
+
+        $("#data_produk tr:last").after("<tr id='row" + $rownomor + "'><td><select class ='form-control-sm' id='produk" + $maks + "' onchange=tampil()><option disabled selected>Pilih produk</option><option value='Jet Tempur'>Jet Tempur</option><option value='Nuklir Hiroshima'>Nuklir Hiroshima</option><option value='Infinity Stone'>Infinity Stone</option><option value='Burj Khalifa'>Burj Khalifa</option><option value='Rudal Hipersonik'>Rudal Hipersonik</option></select></td><td> &emsp;  <input type='number' class='form-control-sm' id='banyak" + $maks + "'> </td><td>  &emsp;<input class='hapus1 btn-danger btn' type='button' value='Hapus' onclick=delete_row('row" + $rownomor + "')></td></tr>");
+        $rownomor = $rownomor + 1;
+        $maks += 1
+        $(".tambah").hide();
+    } else { }
+
+}
+
+
+$(".tambah").click(function () {
+    add_row();
+
+})
+$('#pesan').click(function () {
+    let status = 1
+    let hasil = $('.hasil').html();
+    let belanja = []
+    let stok = []
+
+    $('#hasil').html('')
+
+    for (i = 0; i < 5; i++) {
+        if (i == 0) {
+            belanja[i] = $('#produk').val();
+            stok[i] = $('#banyak').val();
+        } else {
+            belanja[i] = $('#produk' + i).val();
+            stok[i] = $('#banyak' + i).val();
+        }
+    }
+
+    for (j = 0; j < $maks; j++) {
+        for (k = $maks; k > j; k--) {
+            if (belanja[j] == belanja[k]) {
+                $('#warning').html('Maaf. Silahkan pilih jenis produk dan juga hanya membuat nama produk yang sama hanya pada 1 form.');
+                status = 0
+            }
+        }
+    }
+
+    for (i = 0; i < 5; i++) {
+        if (belanja[i] == produk[0].nama) {
+            if (stok[i] > produk[0].stok) {
+                $('#warning2').html('<span> Maaf. stok beli ' + belanja[i] + ' melebihi stok yang tersedia ' + ' silahkan beli dengan stok tidak lebih dari ' + produk[0].stok);
+                status = 0
+            } else { }
+        } else if (belanja[i] == produk[1].nama) {
+            if (stok[i] > produk[1].stok) {
+                $('#warning2').html('<span> Maaf. stok beli ' + belanja[i] + ' melebihi stok yang tersedia ' + ' silahkan beli dengan stok tidak lebih dari ' + produk[1].stok + '</span>');
+                status = 0
+            } else { }
+        }
+        else if (belanja[i] == produk[2].nama) {
+            if (stok[i] > produk[2].stok) {
+                $('#warning2').html('<span> Maaf. stok beli ' + belanja[i] + ' melebihi stok yang tersedia ' + ' silahkan beli dengan stok tidak lebih dari ' + produk[2].stok + '</span>');
+                status = 0
+            } else { }
+        }
+        else if (belanja[i] == produk[3].nama) {
+            if (stok[i] > produk[3].stok) {
+                $('#warning2').html('<span> Maaf. stok beli ' + belanja[i] + ' melebihi stok yang tersedia ' + ' silahkan beli dengan stok tidak lebih dari ' + produk[3].stok + '</span>');
+                status = 0
+            } else { }
+        }
+
+        else if (belanja[i] == produk[4].nama) {
+            if (stok[i] > produk[4].stok) {
+                $('#warning2').html('<span> Maaf. stok beli ' + belanja[i] + ' melebihi stok yang tersedia ' + ' silahkan beli dengan stok tidak lebih dari ' + produk[4].stok + '</span>');
+                status = 0
+            } else { }
+        }
+    };
+
+
+    if (status == 1) {
+        $('#warning').html('')
+        $('#warning2').html('')
+        let nama_pemesan = $('#nama_pemesan').val()
+        $('#hasil').append("<h3>" + nama_pemesan + "</h3>")
+        for (m = 0; m < $rownomor; m++) {
+            if (belanja[m] != null) {
+                $('#hasil').append("<li>" + belanja[m] + " (" + stok[m] + ")</li>")
+            }
+        }
+    }
+
+})
+    </script>
+</body>
+
+</html>
